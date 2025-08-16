@@ -36,6 +36,9 @@ jobs:
             credentials: ${{ secrets.GCP_CREDENTIALS }}
             project_id: ${{secrets.GCP_PROJECT_ID}}
       
-      - name: 'Use gcloud CLI'
+      - name: 'Submit build to glcoud'
         run: 'gcloud builds submit --tag us-central1-docker.pkg.dev/neat-dispatch-469018-b1/notely-ar-repo/notely:latest .'
+
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy notely --image us-central1-docker.pkg.dev/neat-dispatch-469018-b1/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project ${{secrets.GCP_PROJECT_ID}} --max-instances=4
 
