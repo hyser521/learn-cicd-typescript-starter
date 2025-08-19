@@ -8,6 +8,9 @@ jobs:
     deploy:
       name: Deploy
       runs-on: ubuntu-latest
+      
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       steps:
       - name: Check out code
@@ -38,6 +41,9 @@ jobs:
       
       - name: 'Submit build to glcoud'
         run: 'gcloud builds submit --tag us-central1-docker.pkg.dev/neat-dispatch-469018-b1/notely-ar-repo/notely:latest .'
+      
+      - name: 'Migrate db changes'
+        run: npm run db:migrate
 
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/neat-dispatch-469018-b1/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project ${{secrets.GCP_PROJECT_ID}} --max-instances=4
